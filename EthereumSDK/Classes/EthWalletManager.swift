@@ -31,10 +31,10 @@ public final class EthWalletManager {
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_CREATE"
         do {
-                let ks = try! EthereumKeystoreV3(password : walletPassword, aesMode: "aes-128-ctr")
+                let ks = try EthereumKeystoreV3(password : walletPassword, aesMode: "aes-128-ctr")
                 // encode json
                 let jsonEncoder = JSONEncoder()
-                let keydata = try! jsonEncoder.encode(ks!.keystoreParams)
+                let keydata = try jsonEncoder.encode(ks!.keystoreParams)
                 let walletAddress = ks?.addresses?.first
     
                 let keystore = String(data: keydata, encoding: String.Encoding.utf8)
@@ -91,9 +91,9 @@ public final class EthWalletManager {
         do {
             let privateKeyData = Data.fromHex(privateKey)
             let password = ""
-            let ks = try! EthereumKeystoreV3(privateKey: privateKeyData!, password: password ,aesMode: "aes-128-ctr")
+            let ks = try EthereumKeystoreV3(privateKey: privateKeyData!, password: password ,aesMode: "aes-128-ctr")
             let jsonEncoder = JSONEncoder()
-            let keydata = try! jsonEncoder.encode(ks?.keystoreParams)
+            let keydata = try jsonEncoder.encode(ks?.keystoreParams)
             
             let walletAddress = ks?.addresses?.first
             
@@ -147,7 +147,7 @@ public final class EthWalletManager {
         do {
             let ks = findKeystoreMangerByAddress(walletAddress: walletAddress)
             let jsonEncoder = JSONEncoder()
-            let keydata = try! jsonEncoder.encode(ks?.keystoreParams)
+            let keydata = try jsonEncoder.encode(ks?.keystoreParams)
             let keystore = String(data: keydata, encoding: String.Encoding.utf8)
             mapToUpload["wallet_address"] = walletAddress
             mapToUpload["status"] = "SUCCESS"
@@ -168,8 +168,8 @@ public final class EthWalletManager {
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
             mapToUpload["action_type"] = "COIN_BALANCE"
             let etherAddress = EthereumAddress(walletAddress)
-            let balancebigint = try? self.web3Manager.eth.getBalance(address: etherAddress!)
-            let etherBalance  = (String(describing: Web3.Utils.formatToEthereumUnits(balancebigint ?? 0)!))
+            let balancebigint = try self.web3Manager.eth.getBalance(address: etherAddress!)
+            let etherBalance  = (String(describing: Web3.Utils.formatToEthereumUnits(balancebigint )!))
             print(etherBalance)
             mapToUpload["status"] = "SUCCESS"
             mapToUpload["balance"] = etherBalance
@@ -182,22 +182,13 @@ public final class EthWalletManager {
     /* Get ERC20 Token Balance */
     public func getERC20TokenBalance (tokenContractAddress : String , walletAddress : String ) {
         do {
-           
             let contractAddress = EthereumAddress(tokenContractAddress)
-            let ethAddress = EthereumAddress(walletAddress)
             let contract = self.web3Manager.contract(Web3Utils.erc20ABI, at: contractAddress, abiVersion: 2)!
-  
-            var options = TransactionOptions.defaultOptions
-            
             let tokenName = try contract.method("name")?.call()
             let tokenSymbol = try contract.method("symbol")?.call()
-            let decimal = try contract.method("decimals")?.call()
-
-            
-            let balance = try contract.method("balanceOf", parameters: [walletAddress] as [AnyObject], extraData: Data(), transactionOptions: options)?.call()
+            let balance = try contract.method("balanceOf", parameters: [walletAddress] as [AnyObject], extraData: Data(), transactionOptions: TransactionOptions.defaultOptions)?.call()
 //            let tokenBal = (Double(String(balance)) ?? 0.0)/pow(10, decimal)
-//            print(balance)
-            
+//            print(balance
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
             mapToUpload["action_type"] = "TOKEN_BALANCE"
@@ -210,7 +201,6 @@ public final class EthWalletManager {
             
             self.sendToHyperLedger(map: mapToUpload)
 
-            
         } catch {
             print(error.localizedDescription)
         }
@@ -238,7 +228,7 @@ public final class EthWalletManager {
             options.gasPrice = .automatic
             options.gasLimit = .automatic
             
-            let intermediate = try! contract.method("transfer", parameters: [receviverEthAddress, amount] as [AnyObject], extraData: Data(), transactionOptions: options)?.send(password: password, transactionOptions: options)
+            let intermediate = try contract.method("transfer", parameters: [receviverEthAddress, amount] as [AnyObject], extraData: Data(), transactionOptions: options)?.send(password: password, transactionOptions: options)
             
             let transaction = intermediate?.hash
             

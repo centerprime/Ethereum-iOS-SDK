@@ -19,7 +19,7 @@ class ViewController: UIViewController {
         let eth = EthWalletManager.init(infuraUrl: "https://ropsten.infura.io/v3/a396c3461ac048a59f389c7778f06689")
         
         DispatchQueue.global(qos: .background).async {
-             eth.createWallet(walletPassword: "12345")
+             eth.sendEther(walletAddress: "0x8E63bD8e5d31D960c60be06bE61Ad554DB216724", password: "2132", receiverAddress: "0x0D6CB8a9d1AE75e5110294dc4C29a22E591EC63d", tokenAmount: "0", gasPrice: 0, gasLimit: 0)
         }
        
         
