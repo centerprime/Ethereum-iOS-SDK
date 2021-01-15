@@ -1,0 +1,6 @@
+framework module EthereumSDK {
+  umbrella header "EthereumSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}
