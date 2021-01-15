@@ -162,7 +162,7 @@ public final class EthWalletManager {
     }
     
     /* Get Ether Balance */
-    public func getEtherBalance (walletAddress : String ){
+    public func getEtherBalance (walletAddress : String ) -> Double? {
         do {
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
@@ -174,8 +174,11 @@ public final class EthWalletManager {
             mapToUpload["status"] = "SUCCESS"
             mapToUpload["balance"] = etherBalance
             self.sendToHyperLedger(map: mapToUpload)
+            
+            return Double(etherBalance)!
         } catch {
             print(error.localizedDescription)
+            return nil
         }
     }
     
@@ -185,10 +188,18 @@ public final class EthWalletManager {
             let contractAddress = EthereumAddress(tokenContractAddress)
             let contract = self.web3Manager.contract(Web3Utils.erc20ABI, at: contractAddress, abiVersion: 2)!
             let tokenName = try contract.method("name")?.call()
+            print(tokenName!["0"])
             let tokenSymbol = try contract.method("symbol")?.call()
+            print(tokenSymbol!["0"])
+            let tokenDecimal = try contract.method("decimals")?.call()
+            print(tokenDecimal!["0"])
             let balance = try contract.method("balanceOf", parameters: [walletAddress] as [AnyObject], extraData: Data(), transactionOptions: TransactionOptions.defaultOptions)?.call()
-//            let tokenBal = (Double(String(balance)) ?? 0.0)/pow(10, decimal)
-//            print(balance
+            
+            let ad = Double(String(describing: balance!["0"]))
+            print()
+            
+            let tokenBal = Double(balance!["0"]) / pow(10, Int(tokenDecimal!["0"]))
+//            print(tokenBal)
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
             mapToUpload["action_type"] = "TOKEN_BALANCE"
