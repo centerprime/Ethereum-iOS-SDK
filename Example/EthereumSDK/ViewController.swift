@@ -8,11 +8,22 @@
 
 import UIKit
 
+import EthereumSDK
+
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let eth = EthWalletManager.init(infuraUrl: "https://ropsten.infura.io/v3/a396c3461ac048a59f389c7778f06689")
+        
+        DispatchQueue.global(qos: .background).async {
+             eth.createWallet(walletPassword: "12345")
+        }
+       
+        
+        
     }
 
     override func didReceiveMemoryWarning() {

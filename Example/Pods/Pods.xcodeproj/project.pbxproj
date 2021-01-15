@@ -248,6 +248,7 @@
 		99EE8A649068210DF711EA2FFBE1C3BF /* PBKDF2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750BB5B79CF10B16314058C625123A24 /* PBKDF2.swift */; };
 		99F35D362CDAA3F01D59E05FAB02907D /* Strideable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70FCC3B4BB1742157A3C0C0C67CA095E /* Strideable.swift */; };
 		9A80311C79CED9486D2E9FA4DEC3D45A /* StreamDecryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C4861357EB206DB9478731860EC118 /* StreamDecryptor.swift */; };
+		9B72CC2325B1466300689D19 /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B72CC2225B1466300689D19 /* Wallet.swift */; };
 		9C5AA1C3BF98EB8A2B09866C6EF67297 /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 3C58B57E58BD3A8F11E4F9F9D064ABD3 /* hash.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		9D22006C799C6F6E9452B97B760F7CD1 /* UInt64+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDF70E4D0E9E38C97EBE8C33E4B3223 /* UInt64+Extension.swift */; };
 		9D2714E53A168A76A25EBF26B2C7AF83 /* ecdsa.h in Headers */ = {isa = PBXBuildFile; fileRef = 033F90E90568E8D77A808A3CD14342C4 /* ecdsa.h */; settings = {ATTRIBUTES = (Project, ); }; };
@@ -819,6 +820,7 @@
 		9ACC705ADCF8CE46A81D87E7495A3AA0 /* Web3+ERC1594.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Web3+ERC1594.swift"; path = "Sources/web3swift/Tokens/ERC1594/Web3+ERC1594.swift"; sourceTree = "<group>"; };
 		9AFEF7C9F6C27496211FBF7E8CF3CFFB /* Deprecations.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Deprecations.swift; path = Sources/Deprecations.swift; sourceTree = "<group>"; };
 		9B019136349E47EDA8CB707149EFCC6D /* Array+Foundation.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Array+Foundation.swift"; path = "Sources/CryptoSwift/Foundation/Array+Foundation.swift"; sourceTree = "<group>"; };
+		9B72CC2225B1466300689D19 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		9BBD5652F5BDBBCEFC5E64D380B3EFB6 /* BIP32KeystoreJSONStructure.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BIP32KeystoreJSONStructure.swift; path = Sources/web3swift/KeystoreManager/BIP32KeystoreJSONStructure.swift; sourceTree = "<group>"; };
 		9D01EEBD971DEDEBAFD61C1B1A64AB45 /* Hashable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Hashable.swift; path = Sources/Hashable.swift; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -1932,6 +1934,7 @@
 				91D85E64809A31C650544D88E16C89DF /* Keystore */,
 				D4D8E4D91D43B1CF1E96842AA458DD82 /* Pod */,
 				B595608F0E400A1F029AA19C38B3377A /* Support Files */,
+				9B72CC2225B1466300689D19 /* Wallet.swift */,
 			);
 			name = EthereumSDK;
 			path = ../..;
@@ -2638,6 +2641,7 @@
 				30618C1D240CE45B88E7A7EACB6504A1 /* Keystore.swift in Sources */,
 				01281F97B46AB763E3EB7A5054814791 /* KeystoreFactory.swift in Sources */,
 				41EBD6E800077831F5361A0896AF7887 /* Scrypt.swift in Sources */,
+				9B72CC2325B1466300689D19 /* Wallet.swift in Sources */,
 				1D643A6A1AB99F977B0BCF2AACD855EF /* ScryptParams.swift in Sources */,
 				348C8529B7968F557D04EB3BC5CE4B24 /* Secp256k1Helper.swift in Sources */,
 			);

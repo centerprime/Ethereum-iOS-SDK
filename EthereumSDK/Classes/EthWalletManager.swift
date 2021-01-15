@@ -9,6 +9,7 @@
 import Foundation
 import web3swift
 import SwiftyJSON
+import Alamofire
 
 public final class EthWalletManager {
 
@@ -25,7 +26,7 @@ public final class EthWalletManager {
 
     
     /* Wallet Create */
-    public func createWallet(walletPassword : String) {
+    public func createWallet(walletPassword : String) -> Wallet? {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_CREATE"
@@ -43,16 +44,19 @@ public final class EthWalletManager {
                 mapToUpload["wallet_address"] = walletAddress?.address
                 mapToUpload["status"] = "SUCCESS"
                 self.sendToHyperLedger(map: mapToUpload)
+            
+            return Wallet(keystore: keystore!, walletAddress: walletAddress!.address)
         } catch {
               mapToUpload["status"] = "FAILURE"
               print(error.localizedDescription);
               self.sendToHyperLedger(map: mapToUpload)
-
+              return nil
+            
         }
     }
     
     /* Import Wallet By Keystore */
-    public func importByKeystore(keystore : String , password : String) {
+    public func importByKeystore(keystore : String , password : String) -> Wallet? {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_IMPORT_KEYSTORE"
@@ -63,23 +67,24 @@ public final class EthWalletManager {
             let keystore1 = try decoder.decode(Keystore.self, from: keystoreData)
             _ = try keystore1.privateKey(password: password)
             let walletAddress = keystore1.address
-           
+
+            
             writeToFile(fileName: walletAddress, keystore: keystoreData)
 
             mapToUpload["wallet_address"] = walletAddress
             mapToUpload["status"] = "SUCCESS"
             self.sendToHyperLedger(map: mapToUpload)
-            return
+            return Wallet(keystore: keystore, walletAddress: walletAddress)
         } catch {
-            print(error)
+            print(error.localizedDescription)
             mapToUpload["status"] = "FAILURE"
             self.sendToHyperLedger(map: mapToUpload)
-            return
+            return nil
         }
     }
     
     /* Import Wallet By Private Key */
-    public func importByPrivateKey(privateKey : String ) {
+    public func importByPrivateKey(privateKey : String ) -> Wallet? {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_IMPORT_PRIVATE_KEY"
@@ -99,12 +104,12 @@ public final class EthWalletManager {
             mapToUpload["wallet_address"] = walletAddress
             mapToUpload["status"] = "SUCCESS"
             self.sendToHyperLedger(map: mapToUpload)
-            return
+            return Wallet(keystore: keystore, walletAddress: walletAddress?.address)
         } catch {
             print(error.localizedDescription)
             mapToUpload["status"] = "FAILURE"
             self.sendToHyperLedger(map: mapToUpload)
-            return
+            return nil
         }
     }
     
@@ -135,7 +140,7 @@ public final class EthWalletManager {
     }
     
     /* Export Keystore */
-    func exportKeystore(walletAddress : String ) -> String{
+    func exportKeystore(walletAddress : String ) -> String {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_EXPORT_PRIVATE_KEY"
@@ -254,9 +259,7 @@ public final class EthWalletManager {
             mapToUpload["status"] = "SUCCESS"
             
             self.sendToHyperLedger(map: mapToUpload)
-            
-            
-            
+
             return transaction
 
         } catch {
@@ -318,10 +321,64 @@ public final class EthWalletManager {
     
     func sendToHyperLedger (map : [String: Any]) {
         
+         
+        let url = "http://34.231.96.72:8081/createTransaction/"
+        
+        var mapToUpload = [String : Any]()
+        var body = map
+        
+        mapToUpload["orgname"] = "org1"
+        mapToUpload["username"] = "user1"
+        mapToUpload["tx_type"] = "ETHEREUM"
+        if let theJSONData = try?  JSONSerialization.data(
+          withJSONObject: self.getDeviceInfo()
+          ),
+          let theJSONText = String(data: theJSONData,
+                                   encoding: String.Encoding(rawValue: String.Encoding.RawValue(Int(String.Encoding.ascii.rawValue)))) {
+            body["DEVICE_INFO"] = theJSONText
+        }
+        mapToUpload["body"] = body
+        
+        print(mapToUpload)
+
+        Alamofire.request(url, method: .post, parameters: mapToUpload,encoding: JSONEncoding.default, headers: nil).responseJSON {
+        response in
+          switch response.result {
+                        case .success:
+                            print(response)
+
+                            break
+                        case .failure(let error):
+
+                            print(error)
+                        }
+        }
+        
+        
     }
     
     func isMainnet() -> Bool {
         return self.infuraUrl.contains("mainnet")
+    }
+    
+    func getDeviceInfo() -> [String : Any]{
+        var data = [String : Any]()
+        
+        let deviceUUID = UIDevice.current.identifierForVendor!.uuidString
+        let osName = "iOS"
+        let modelName = UIDevice.current.name
+        let serialNumber = "Not allowed"
+        let manufacturer = "Apple"
+        
+        data["ID"] = deviceUUID
+        data["OS"] = osName
+        data["MODEL"] = modelName
+        data["SERAIL"] = serialNumber
+        data["MANUFACTURER"] = manufacturer
+        
+        return data
+        
+        
     }
     
 
