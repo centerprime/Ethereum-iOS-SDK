@@ -597,7 +597,7 @@
 		19B8CAB56E0F9275442F311056E7CEE0 /* EthereumFilterEncodingExtensions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EthereumFilterEncodingExtensions.swift; path = Sources/web3swift/Contract/EthereumFilterEncodingExtensions.swift; sourceTree = "<group>"; };
 		1A3A0A36724DE1E50E2C961D5CFD5E83 /* web3swift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = web3swift.debug.xcconfig; sourceTree = "<group>"; };
 		1B216EEE0CB71752A6F5426F488F6E7B /* Alamofire.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Alamofire.swift; path = Source/Alamofire.swift; sourceTree = "<group>"; };
-		1BF72DA625B4352800C1C5CD /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Wallet.swift; path = EthereumSDK/Wallet.swift; sourceTree = "<group>"; };
+		1BF72DA625B4352800C1C5CD /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		1D86CEBA8C43BFD6AE21F6462ADCAD30 /* Promise+HttpProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Promise+HttpProvider.swift"; path = "Sources/web3swift/Promises/Promise+HttpProvider.swift"; sourceTree = "<group>"; };
 		1E0793DBF8639BA739465A557F034BD2 /* join.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = join.m; path = Sources/join.m; sourceTree = "<group>"; };
 		1E19B1824D6C9A03BFF800C3EF47BEDF /* AnyPromise.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AnyPromise.h; path = Sources/AnyPromise.h; sourceTree = "<group>"; };
@@ -1555,6 +1555,7 @@
 		89BEE33C618FE9E0FD16D09BD140BC78 /* Keystore */ = {
 			isa = PBXGroup;
 			children = (
+				1BF72DA625B4352800C1C5CD /* Wallet.swift */,
 				430B435300D2268D6D01244EFD174264 /* Keystore.swift */,
 				7CB70957E33EF31E8CBDE07BBCF139CF /* KeystoreFactory.swift */,
 				110E5ED5AAEA01A1342D3431CD7C702D /* Scrypt */,
@@ -1821,7 +1822,6 @@
 				89BEE33C618FE9E0FD16D09BD140BC78 /* Keystore */,
 				ABFDD0B59ADA79A1D84CD6030E9E532C /* Pod */,
 				BC5F7F22E87534D92C883F10C4EF0514 /* Support Files */,
-				1BF72DA625B4352800C1C5CD /* Wallet.swift */,
 			);
 			name = EthereumSDK;
 			path = ../..;
