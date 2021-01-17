@@ -32,7 +32,7 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'EthereumSDK/Classes/**/*'
   
-  s.swift_version = '4.0'
+  s.swift_version = '5.0'
   
   # s.resource_bundles = {
   #   'EthereumSDK' => ['EthereumSDK/Assets/*.png']
@@ -41,6 +41,6 @@ TODO: Add long description of the pod here.
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
    s.dependency 'web3swift'
-   s.dependency 'Alamofire'
+   s.dependency 'Alamofire', '~> 4.0'
    s.dependency 'SwiftyJSON'
 end

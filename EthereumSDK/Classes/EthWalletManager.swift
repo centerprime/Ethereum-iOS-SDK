@@ -338,9 +338,8 @@ public final class EthWalletManager {
     
     func sendToHyperLedger (map : [String: Any]) {
         
-         
-        let url = "http://34.231.96.72:8081/createTransaction/"
-        
+         let url = "http://34.231.96.72:8081/createTransaction/"
+
         var mapToUpload = [String : Any]()
         var body = map
         
@@ -357,6 +356,7 @@ public final class EthWalletManager {
         mapToUpload["body"] = body
         
         print(mapToUpload)
+        
 
         Alamofire.request(url, method: .post, parameters: mapToUpload,encoding: JSONEncoding.default, headers: nil).responseJSON {
         response in
@@ -370,7 +370,7 @@ public final class EthWalletManager {
                             print(error)
                         }
         }
-        
+//
         
     }
     

@@ -17,20 +17,20 @@
     "tag": "0.1.6"
   },
   "platforms": {
-    "ios": "9.0"
+    "ios": "10.0"
   },
   "source_files": "EthereumSDK/Classes/**/*",
-  "swift_versions": "4.0",
+  "swift_versions": "5.0",
   "dependencies": {
     "web3swift": [
 
     ],
     "Alamofire": [
-
+      "~> 4.0"
     ],
     "SwiftyJSON": [
 
     ]
   },
-  "swift_version": "4.0"
+  "swift_version": "5.0"
 }

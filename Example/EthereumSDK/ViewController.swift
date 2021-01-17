@@ -22,8 +22,8 @@ class ViewController: UIViewController {
             
             do {
 //                // 1. Wallet Create
-//                var wallet = try eth.createWallet(walletPassword: "12345")
-//                print(wallet)
+                var wallet = try eth.createWallet(walletPassword: "12345")
+                print(wallet)
 //                // 2. Export Keystore
 //                var keysotre = try eth.exportKeystore(walletAddress: (wallet?.walletAddress)!)
 //                print(keysotre)
