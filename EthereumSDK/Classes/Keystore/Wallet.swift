@@ -1,9 +1,3 @@
-//
-//  Wallet.sol.swift
-//  EthereumSDK
-//
-//  Created by Nizomjon Hajiev on 2021/01/17.
-//
 
 import Foundation
 

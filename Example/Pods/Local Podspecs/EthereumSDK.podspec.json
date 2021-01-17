@@ -1,9 +1,9 @@
 {
   "name": "EthereumSDK",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "summary": "EthereumSDK by Centerprime",
   "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/centerprime/EthereumSDK1.git",
+  "homepage": "https://github.com/centerprime/Ethereum-iOS-SDK.git",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,9 +12,9 @@
     "centerprime": "support@centerprime.technology"
   },
   "source": {
-    "git": "https://github.com/centerprime/EthereumSDK1.git",
+    "git": "https://github.com/centerprime/Ethereum-iOS-SDK.git",
     "branch": "master",
-    "tag": "0.1.3"
+    "tag": "0.1.4"
   },
   "platforms": {
     "ios": "9.0"

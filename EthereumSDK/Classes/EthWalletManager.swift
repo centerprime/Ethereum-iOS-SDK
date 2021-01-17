@@ -24,7 +24,7 @@ public final class EthWalletManager {
 
     
     /* Wallet Create */
-    public func createWallet(walletPassword : String) -> Wallet? {
+    public func createWallet(walletPassword : String) throws -> Wallet? {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_CREATE"
@@ -48,13 +48,13 @@ public final class EthWalletManager {
               mapToUpload["status"] = "FAILURE"
               print(error.localizedDescription);
               self.sendToHyperLedger(map: mapToUpload)
-              return nil
+              throw error
             
         }
     }
     
     /* Import Wallet By Keystore */
-    public func importByKeystore(keystore : String , password : String) -> Wallet? {
+    public func importByKeystore(keystore : String , password : String) throws -> Wallet? {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_IMPORT_KEYSTORE"
@@ -77,12 +77,12 @@ public final class EthWalletManager {
             print(error.localizedDescription)
             mapToUpload["status"] = "FAILURE"
             self.sendToHyperLedger(map: mapToUpload)
-            return nil
+            throw error
         }
     }
     
     /* Import Wallet By Private Key */
-    public func importByPrivateKey(privateKey : String ) -> Wallet? {
+    public func importByPrivateKey(privateKey : String ) throws -> Wallet? {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_IMPORT_PRIVATE_KEY"
@@ -99,7 +99,7 @@ public final class EthWalletManager {
             
             writeToFile(fileName: walletAddress!.address, keystore: keydata)
 
-            mapToUpload["wallet_address"] = walletAddress
+            mapToUpload["wallet_address"] = walletAddress?.address
             mapToUpload["status"] = "SUCCESS"
             self.sendToHyperLedger(map: mapToUpload)
             return Wallet(keystore: keystore, walletAddress: walletAddress?.address)
@@ -107,19 +107,19 @@ public final class EthWalletManager {
             print(error.localizedDescription)
             mapToUpload["status"] = "FAILURE"
             self.sendToHyperLedger(map: mapToUpload)
-            return nil
+            throw error
         }
     }
     
     
     /* Export Private Key */
-    func exportPrivateKey(walletAddress : String, password : String ) -> [UInt8]{
+    public func exportPrivateKey(walletAddress : String, password : String ) throws -> [UInt8] {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_EXPORT_PRIVATE_KEY"
         do {
             let decoder = JSONDecoder()
-            let keystore = exportKeystore(walletAddress: walletAddress)
+            let keystore = try exportKeystore(walletAddress: walletAddress)
             let json = JSON.init(parseJSON:keystore)
             let keystoreData: Data =  try JSONEncoder().encode(json)// Load keystore data from file?
             let keystore1 = try decoder.decode(Keystore.self, from: keystoreData)
@@ -133,12 +133,12 @@ public final class EthWalletManager {
             mapToUpload["wallet_address"] = walletAddress
             mapToUpload["status"] = "FAILURE"
             self.sendToHyperLedger(map: mapToUpload)
-            return [0]
+            throw error
         }
     }
     
     /* Export Keystore */
-    func exportKeystore(walletAddress : String ) -> String {
+    public func exportKeystore(walletAddress : String ) throws -> String {
         var mapToUpload = [String: Any]()
         mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
         mapToUpload["action_type"] = "WALLET_EXPORT_PRIVATE_KEY"
@@ -155,12 +155,12 @@ public final class EthWalletManager {
             mapToUpload["wallet_address"] = walletAddress
             mapToUpload["status"] = "FAILURE"
             self.sendToHyperLedger(map: mapToUpload)
-            return error.localizedDescription
+            throw error
         }
     }
     
     /* Get Ether Balance */
-    public func getEtherBalance (walletAddress : String ) -> String? {
+    public func getEtherBalance (walletAddress : String ) throws -> String? {
         do {
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
@@ -175,12 +175,12 @@ public final class EthWalletManager {
             return etherBalance
         } catch {
             print(error.localizedDescription)
-            return nil
+            throw error
         }
     }
     
     /* Get ERC20 Token Balance */
-    public func getERC20TokenBalance (tokenContractAddress : String , walletAddress : String ) -> String? {
+    public func getERC20TokenBalance (tokenContractAddress : String , walletAddress : String ) throws -> String? {
         do {
             let contractAddress = EthereumAddress(tokenContractAddress)
             let contract = self.web3Manager.contract(Web3Utils.erc20ABI, at: contractAddress, abiVersion: 2)!
@@ -203,7 +203,7 @@ public final class EthWalletManager {
             mapToUpload["token_smart_contract"] = tokenContractAddress
             mapToUpload["token_name"] = tokenName!["0"]!
             mapToUpload["token_symbol"] = tokenSymbol!["0"]!
-            mapToUpload["balance"] = balance
+            mapToUpload["balance"] = tokenBal
             mapToUpload["status"] = "SUCCESS"
             
             self.sendToHyperLedger(map: mapToUpload)
@@ -212,12 +212,13 @@ public final class EthWalletManager {
 
         } catch {
             print(error.localizedDescription)
-            return nil
+            throw error
         }
     }
     
     /* Send ERC20 Token */
-    public func sendERC20Token(walletAddress : String , password : String , receiverAddress : String , tokenAmount : String, gasPrice : Double, gasLimit : Double, tokenContractAddress : String) -> String? {
+    public func sendERC20Token(walletAddress : String , password : String , receiverAddress : String , tokenAmount : String, tokenContractAddress : String,
+                               gasPrice : BigUInt , gasLimit : BigUInt) throws -> String? {
         
         do {
             
@@ -235,12 +236,13 @@ public final class EthWalletManager {
 
             var options = TransactionOptions.defaultOptions
             options.from = senderEthAddress
-            options.gasPrice = .automatic
-            options.gasLimit = .automatic
+            let gweiUnit = BigUInt(1000000000)
+            options.gasPrice = .manual(gasPrice * gweiUnit)
+            options.gasLimit = .manual(gasLimit)
             
-            let intermediate = try contract.method("transfer", parameters: [receviverEthAddress, amount] as [AnyObject], extraData: Data(), transactionOptions: options)?.send(password: password, transactionOptions: options)
+            let contratInstance = try contract.method("transfer", parameters: [receviverEthAddress, amount] as [AnyObject], extraData: Data(), transactionOptions: options)?.send(password: password, transactionOptions: options)
             
-            let transaction = intermediate?.hash
+            let transaction = contratInstance?.hash
             
             
             var mapToUpload = [String: Any]()
@@ -249,12 +251,12 @@ public final class EthWalletManager {
             mapToUpload["from_wallet_address"] = walletAddress
             mapToUpload["to_wallet_address"] = receiverAddress
             mapToUpload["amount"] = tokenAmount
-            mapToUpload["gasLimit"] = options.gasLimit
-            mapToUpload["gasPrice"] = options.gasPrice
-            mapToUpload["fee"] = 0
+            mapToUpload["gasLimit"] = String(gasLimit)
+            mapToUpload["gasPrice"] = String(gasPrice)
+            mapToUpload["fee"] = Web3.Utils.formatToEthereumUnits(gasPrice * gasLimit, toUnits: .Gwei, decimals: 8, decimalSeparator: ".")
             mapToUpload["token_smart_contract"] = tokenContractAddress
-            mapToUpload["token_name"] = tokenName
-            mapToUpload["token_symbol"] = tokenSymbol
+            mapToUpload["token_name"] = tokenName!["0"]!
+            mapToUpload["token_symbol"] = tokenSymbol!["0"]!
             mapToUpload["tx_hash"] = transaction
             mapToUpload["status"] = "SUCCESS"
             
@@ -264,13 +266,14 @@ public final class EthWalletManager {
 
         } catch {
             print(error.localizedDescription)
-            return error.localizedDescription
+            throw error
         }
         
     }
     
     /* Send Ether  */
-    public func sendEther(walletAddress : String , password : String , receiverAddress : String , tokenAmount : String, gasPrice : Double, gasLimit : Double) -> String? {
+    public func sendEther(walletAddress : String , password : String , receiverAddress : String , etherAmount : String ,
+    gasPrice : BigUInt , gasLimit : BigUInt) throws -> String? {
         
         do {
             if (findKeystoreMangerByAddress(walletAddress: walletAddress) == nil) {
@@ -280,31 +283,32 @@ public final class EthWalletManager {
             let ethSenderAddress = EthereumAddress(walletAddress)!
             let resEthAddress = EthereumAddress(receiverAddress)!
             let contract = self.web3Manager.contract(Web3.Utils.coldWalletABI, at: resEthAddress, abiVersion: 2)!
-            let amount = Web3.Utils.parseToBigUInt(tokenAmount, units: .eth)
+            let amount = Web3.Utils.parseToBigUInt(etherAmount, units: .eth)
             var options = TransactionOptions.defaultOptions
             options.value = amount
             options.from = ethSenderAddress
-            options.gasPrice = .automatic
-            options.gasLimit = .automatic
+            let gweiUnit = BigUInt(1000000000)
+            print(gweiUnit)
+            options.gasPrice = .manual(gasPrice * gweiUnit)
+            options.gasLimit = .manual(gasLimit)
 
             let tx = contract.write(
                                 "fallback",
                                 parameters: [AnyObject](),
                                 extraData: Data(),
                                 transactionOptions: options)!
-            
+
             let result = try tx.send(password: password)
-            
-            
+
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
             mapToUpload["action_type"] = "SEND_ETHER"
             mapToUpload["from_wallet_address"] = walletAddress
             mapToUpload["to_wallet_address"] = receiverAddress
-            mapToUpload["amount"] = tokenAmount
-            mapToUpload["gasLimit"] = options.gasLimit
-            mapToUpload["gasPrice"] = options.gasPrice
-            mapToUpload["fee"] = 0
+            mapToUpload["amount"] = etherAmount
+            mapToUpload["gasLimit"] = String(gasLimit)
+            mapToUpload["gasPrice"] = String(gasPrice)
+            mapToUpload["fee"] = Web3.Utils.formatToEthereumUnits(gasPrice * gasLimit, toUnits: .Gwei, decimals: 8, decimalSeparator: ".")
             mapToUpload["tx_hash"] = result.hash
             mapToUpload["status"] = "SUCCESS"
             
@@ -313,7 +317,7 @@ public final class EthWalletManager {
             return result.hash
         } catch {
             print(error.localizedDescription)
-            return error.localizedDescription
+            throw error
         }
         
     }
@@ -385,7 +389,7 @@ public final class EthWalletManager {
     
     func writeToFile(fileName : String , keystore : Data){
         let userDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        FileManager.default.createFile(atPath: userDir + "/keystore/" + fileName +  ".json", contents: keystore, attributes: nil)
+        FileManager.default.createFile(atPath: userDir + "/keystore/" + fileName.lowercased() +  ".json", contents: keystore, attributes: nil)
     }
     
     
@@ -394,7 +398,7 @@ public final class EthWalletManager {
         let userDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         let keystoreManager = KeystoreManager.managerForPath(userDir + "/keystore")
         for i in keystoreManager?.keystores ?? [] {
-            if (i.getAddress() == ethWalletAddress){
+            if (i.getAddress()?.address.lowercased() == ethWalletAddress?.address.lowercased()){
                 return i
             }
         }
