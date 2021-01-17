@@ -1,9 +1,6 @@
 //
-//  DemoLib.swift
-//  jizz
-//
-//  Created by Khajiev Nizomjon on 14/01/2021.
-//  Copyright © 2021 Khajiev Nizomjon. All rights reserved.
+//  Created by Centerprime on 14/01/2021.
+//  Copyright © 2021 Centerprime. All rights reserved.
 //
 
 import Foundation
