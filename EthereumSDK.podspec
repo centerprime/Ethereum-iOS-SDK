@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'EthereumSDK'
-  s.version          = '0.1.4'
+  s.version          = '0.1.6'
   s.summary          = 'EthereumSDK by Centerprime'
 
 # This description is used to generate tags and improve search results.
