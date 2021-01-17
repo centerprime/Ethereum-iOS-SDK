@@ -10,6 +10,7 @@ import Foundation
 import web3swift
 import SwiftyJSON
 import Alamofire
+import BigInt
 
 public final class EthWalletManager {
 
@@ -162,7 +163,7 @@ public final class EthWalletManager {
     }
     
     /* Get Ether Balance */
-    public func getEtherBalance (walletAddress : String ){
+    public func getEtherBalance (walletAddress : String ) -> String? {
         do {
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
@@ -174,35 +175,47 @@ public final class EthWalletManager {
             mapToUpload["status"] = "SUCCESS"
             mapToUpload["balance"] = etherBalance
             self.sendToHyperLedger(map: mapToUpload)
+            return etherBalance
         } catch {
             print(error.localizedDescription)
+            return nil
         }
     }
     
     /* Get ERC20 Token Balance */
-    public func getERC20TokenBalance (tokenContractAddress : String , walletAddress : String ) {
+    public func getERC20TokenBalance (tokenContractAddress : String , walletAddress : String ) -> String? {
         do {
             let contractAddress = EthereumAddress(tokenContractAddress)
             let contract = self.web3Manager.contract(Web3Utils.erc20ABI, at: contractAddress, abiVersion: 2)!
             let tokenName = try contract.method("name")?.call()
             let tokenSymbol = try contract.method("symbol")?.call()
+            let decimals = try contract.method("decimals")?.call()
             let balance = try contract.method("balanceOf", parameters: [walletAddress] as [AnyObject], extraData: Data(), transactionOptions: TransactionOptions.defaultOptions)?.call()
-//            let tokenBal = (Double(String(balance)) ?? 0.0)/pow(10, decimal)
-//            print(balance
+            
+            let numStr = decimals!["0"] as! BigUInt
+            let decimal = Double(String(numStr))
+
+            let balanceStr = balance!["0"] as! BigUInt
+            let tokenBalance = Double(String(balanceStr))
+            let tokenBal = tokenBalance!/pow(10, decimal!)
+
             var mapToUpload = [String: Any]()
             mapToUpload["network"] = isMainnet() ? "MAINNET" : "TESTNET"
             mapToUpload["action_type"] = "TOKEN_BALANCE"
             mapToUpload["wallet_address"] = walletAddress
             mapToUpload["token_smart_contract"] = tokenContractAddress
-            mapToUpload["token_name"] = tokenName
-            mapToUpload["token_symbol"] = tokenSymbol
+            mapToUpload["token_name"] = tokenName!["0"]!
+            mapToUpload["token_symbol"] = tokenSymbol!["0"]!
             mapToUpload["balance"] = balance
             mapToUpload["status"] = "SUCCESS"
             
             self.sendToHyperLedger(map: mapToUpload)
+            
+            return String(tokenBal)
 
         } catch {
             print(error.localizedDescription)
+            return nil
         }
     }
     
