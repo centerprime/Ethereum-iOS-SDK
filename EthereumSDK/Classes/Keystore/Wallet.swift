@@ -1,3 +1,7 @@
+//
+//  Wallet.swift
+//  EthereumSDK
+
 
 import Foundation
 
