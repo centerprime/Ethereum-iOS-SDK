@@ -1,5 +1,5 @@
 import XCTest
-import EthereumSDK
+//import EthereumSDK
 
 class Tests: XCTestCase {
     
