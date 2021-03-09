@@ -22,8 +22,8 @@ class ViewController: UIViewController {
             
             do {
 //                // 1. Wallet Create
-                var wallet = try eth.createWallet(walletPassword: "12345")
-                print(wallet)
+//                var wallet = try eth.createWallet(walletPassword: "12345")
+//                print(wallet)
 //                // 2. Export Keystore
 //                var keysotre = try eth.exportKeystore(walletAddress: (wallet?.walletAddress)!)
 //                print(keysotre)
@@ -38,16 +38,22 @@ class ViewController: UIViewController {
 //                var wallet = try eth.importByPrivateKey(privateKey: "")
 //                print(wallet)
                 // 6. Ether Balance
-//                var etherBalance = try eth.getEtherBalance(walletAddress: "0x38C1E1204C10C8be90ecA671Da8Ea8a9AEb16031")
+//                var etherBalance = try eth.getEtherBalance(walletAddress: "0x43926B17D4615A6B37D7cbAe30818F54582cd252")
 //                print(etherBalance)
                 // 7. ERC20 Token Balance
-//                var tokenBalance = try eth.getERC20TokenBalance(tokenContractAddress: "0x4b9a509e3290f2e510474f747e27e5ce271565f9", walletAddress: "0x38C1E1204C10C8be90ecA671Da8Ea8a9AEb16031")
+//                var tokenBalance = try eth.getERC20TokenBalance(tokenContractAddress: "0x135669c2dcbd63f639582b313883f101a4497f76", walletAddress: "0x43926B17D4615A6B37D7cbAe30818F54582cd252")
 //                print(tokenBalance)
                 // 8. Send Ether
 //                var tx = try eth.sendEther(walletAddress: "0x9c6f19f15ac5b9fff867ca1f5a41d10b4c6ed1b5", password: "12345", receiverAddress: "0x38C1E1204C10C8be90ecA671Da8Ea8a9AEb16031", etherAmount: "0.03", gasPrice: 51, gasLimit: 21000)
 //                print(tx)
                 // 9. Send ERC20 Token
-//                var tx = try eth.sendERC20Token(walletAddress: "0x9c6f19f15ac5b9fff867ca1f5a41d10b4c6ed1b5", password: "12345", receiverAddress: "0x38C1E1204C10C8be90ecA671Da8Ea8a9AEb16031", tokenAmount: "123", tokenContractAddress: "0x4df68db57412cc1418e108d31f4e1bd48e4cc83e", gasPrice: 52, gasLimit: 50000)
+//        var tx = try eth.sendERC20Token(walletAddress: "0x43926B17D4615A6B37D7cbAe30818F54582cd252",
+//                                        password: "12345",
+//                                        receiverAddress: "0x0C38A8a6eBFc2FfB6CB5059f72F445B49e2E3093",
+//                                        tokenAmount: "3",
+//                                        tokenContractAddress: "0x135669c2dcbd63f639582b313883f101a4497f76",
+//                                        gasPrice: 52,
+//                                        gasLimit: 150000)
 //                print(tx)
                 
             } catch {

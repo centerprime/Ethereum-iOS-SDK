@@ -231,8 +231,13 @@ public final class EthWalletManager {
     }
     
     /* Send ERC20 Token */
-    public func sendERC20Token(walletAddress : String , password : String , receiverAddress : String , tokenAmount : String, tokenContractAddress : String,
-                               gasPrice : BigUInt , gasLimit : BigUInt) throws -> String? {
+    public func sendERC20Token(walletAddress : String,
+                               password : String,
+                               receiverAddress : String,
+                               tokenAmount : String,
+                               tokenContractAddress : String,
+                               gasPrice : BigUInt,
+                               gasLimit : BigUInt) throws -> String? {
         
         do {
             
@@ -246,7 +251,11 @@ public final class EthWalletManager {
             let contract = self.web3Manager.contract(Web3Utils.erc20ABI, at: contractAddress, abiVersion: 2)!
             let tokenName = try contract.method("name")?.call()
             let tokenSymbol = try contract.method("symbol")?.call()
-            let amount = Web3.Utils.parseToBigUInt(tokenAmount, units: .eth)
+            
+            let token = ERC20(web3: self.web3Manager, provider: isMainnet() ? Web3.InfuraMainnetWeb3().provider : Web3.InfuraRopstenWeb3().provider, address: EthereumAddress(tokenContractAddress)!)
+            token.readProperties()
+            
+            let amount = Web3.Utils.parseToBigUInt(tokenAmount, decimals: Int(token.decimals))
 
             var options = TransactionOptions.defaultOptions
             options.from = senderEthAddress
